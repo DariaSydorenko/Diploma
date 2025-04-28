@@ -26,7 +26,7 @@ const LoginPage = () => {
       const idToken = await userCredential.user.getIdToken();
     
       // 📡 Надіслати токен на бекенд
-      const response = await fetch("http://localhost:8000/api/auth/verify-token", {
+      const response = await fetch("http://localhost:8000/auth/verify-token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,6 +36,8 @@ const LoginPage = () => {
       });
     
       const data = await response.json();
+
+      console.log(response)
     
       if (response.ok) {
         setMessage(`✅ Успішно! Привіт, ${data.name || email}`);

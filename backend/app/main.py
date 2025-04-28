@@ -4,7 +4,7 @@ from app.api.routes import router as api_router
 
 app = FastAPI()
 
-# Підключаємо маршрути з routes.py
+# Підключаємо зібраний роутер
 app.include_router(api_router)
 
 app.add_middleware(

@@ -17,7 +17,7 @@ async def hello_world():
 #     return user
 
 
-@router.get("/api/profile")
+@router.get("/profile")
 async def get_profile(request: Request):
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
@@ -30,7 +30,7 @@ async def get_profile(request: Request):
 
     return {"email": user_data.get("email")}
 
-@router.post("/api/auth/verify-token")
+@router.post("/verify-token")
 async def verify_user_token(request: Request):
     auth_header = request.headers.get("Authorization")
     if not auth_header:
