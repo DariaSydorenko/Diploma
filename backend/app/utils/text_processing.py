@@ -55,3 +55,26 @@ def full_text_from_work(work):
             abstract = " ".join(work["abstract_inverted_index"].keys())
     
     return f"{title} {abstract}".strip()
+
+# def full_text_from_article(work):
+#     """Отримання повного тексту для ембедінгу з правильною обробкою абстракту"""
+#     title = getattr(work, "display_name", "")
+#     abstract = ""
+
+#     if isinstance(getattr(work, "abstract_inverted_index", None), dict):
+#         try:
+#             inverted_index = getattr(work, "abstract_inverted_index", None)
+#             positions = {}
+
+#             for word, positions_list in inverted_index.items():
+#                 for pos in positions_list:
+#                     positions[pos] = word
+
+#             max_pos = max(positions.keys()) if positions else -1
+#             abstract_words = [positions.get(i, "") for i in range(max_pos + 1) if i in positions]
+#             abstract = " ".join(abstract_words)
+#         except Exception as e:
+#             print(f"Помилка обробки abstract_inverted_index: {e}")
+#             abstract = " ".join(abstract_words.keys())
+    
+#     return f"{title} {abstract}".strip()

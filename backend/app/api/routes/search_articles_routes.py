@@ -32,6 +32,7 @@ async def search_articles(
 ):
     start_time = time.time()
     model = request.app.state.model
+    print(model)
 
     query_embedding = model.encode(query, convert_to_tensor=True)
     query_embedding = F.normalize(query_embedding, p=2, dim=0)
@@ -70,7 +71,7 @@ async def search_articles(
         params["filter"] = filter_str
 
     # Паралельне отримання даних з OpenAlex
-    max_results = 500
+    max_results = 400
     all_results = await parallel_fetch_openalex(query, base_url, params, max_results)
 
     if not all_results:

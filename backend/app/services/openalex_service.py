@@ -46,14 +46,11 @@ def relevance_score(query, title, abstract):
 
 
 
-async def parallel_fetch_openalex(query, base_url, params, max_results=100):
+async def parallel_fetch_openalex(query, base_url, params, max_results):
     """Оптимізоване паралельне отримання даних з OpenAlex"""
     next_cursor = "*"
     collected = 0
     all_results = []
-    
-    # Обмежуємо кількість паралельних запитів
-    max_parallel_requests = 2  # Зменшуємо кількість паралельних запитів
     
     async with aiohttp.ClientSession() as session:
         # Перший запит для отримання початкових результатів
@@ -68,7 +65,6 @@ async def parallel_fetch_openalex(query, base_url, params, max_results=100):
         for work in results:
             if is_valid_work(work):
                 title = work.get("title", "")
-                abstract = work.get("abstract_inverted_index", "")
                 abstract_text = full_text_from_work(work)
                 score = relevance_score(query, title, abstract_text)
                 scored_results.append((score, (abstract_text, work)))
@@ -83,13 +79,12 @@ async def parallel_fetch_openalex(query, base_url, params, max_results=100):
         # Отримання наступного курсора
         next_cursor = first_response.get("meta", {}).get("next_cursor")
         
-        # Якщо нам потрібно більше результатів і є наступний курсор
+        # Якщо потрібно більше результатів і є наступний курсор
         page_count = 1
-        while next_cursor and collected < max_results and page_count < 5:  # Обмежуємо кількість сторінок
+        while next_cursor and collected < max_results and page_count < 5:
             page_count += 1
             
             try:
-                # Отримуємо наступну сторінку результатів
                 next_response = await fetch_openalex_data(session, base_url, params, next_cursor)
                 
                 if next_response and "results" in next_response:
@@ -97,8 +92,7 @@ async def parallel_fetch_openalex(query, base_url, params, max_results=100):
                     valid_results = [(full_text_from_work(work), work) for work in results if is_valid_work(work)]
                     all_results.extend(valid_results)
                     collected += len(valid_results)
-                    
-                    # Оновлюємо курсор для наступної сторінки
+
                     next_cursor = next_response.get("meta", {}).get("next_cursor")
                     if not next_cursor:
                         break
@@ -108,6 +102,5 @@ async def parallel_fetch_openalex(query, base_url, params, max_results=100):
             except Exception as e:
                 print(f"Помилка при отриманні наступної сторінки: {e}")
                 break
-    
-    # Обмежуємо результати до max_results
+
     return all_results[:max_results]

@@ -58,12 +58,6 @@ import asyncio
 from typing import List, Any
 
 async def batch_encode_embeddings(model, texts: List[str], batch_size: int = 32) -> List[Any]:
-    """
-    Асинхронне кодування ембедінгів для списку текстів, з урахуванням їх позиції у вхідному списку.
-    
-    Порожні або невалідні тексти ігноруються, але їх позиції у фінальному списку заповнюються `None`.
-    """
-
     if not texts:
         return []
 
