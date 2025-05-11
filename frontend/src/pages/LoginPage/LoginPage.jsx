@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { auth } from "../firebaseConfig";
+import { auth } from "../../firebaseConfig";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import styles from "./LoginPage.module.css";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +25,6 @@ const LoginPage = () => {
       }
 
       const idToken = await userCredential.user.getIdToken();
-
       const response = await fetch("http://localhost:8000/auth/verify-token", {
         method: "POST",
         headers: {
@@ -33,39 +33,33 @@ const LoginPage = () => {
         },
         body: JSON.stringify({ email }),
       });
-    
-      const data = await response.json();
 
-      console.log(response)
-    
+      const data = await response.json();
       if (response.ok) {
-        navigate('/search_articles');
+        navigate("/search_articles");
         setMessage(`✅ Успішно! Привіт, ${data.name || email}`);
       } else {
-        setMessage(`✅ Успішна авторизація через Firebase, але сервер відповів з помилкою: ${data.detail}`);
+        setMessage(`✅ Успішна авторизація, але сервер відповів: ${data.detail}`);
       }
     } catch (err) {
-      console.error(err);
-
       if (err.message.includes("Failed to fetch")) {
-        setMessage("✅ Успішна авторизація через Firebase, але не вдалося підключитися до бекенду.");
+        setMessage("✅ Успішна авторизація через Firebase, але бекенд недоступний.");
       } else {
         setMessage("❌ Помилка: " + err.message);
       }
-    }    
+    }
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto", padding: 20 }}>
+    <div className={styles.container}>
       <h2>{isRegistering ? "Реєстрація" : "Вхід"}</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="email"
           placeholder="Email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
         />
         <input
           type="password"
@@ -73,15 +67,15 @@ const LoginPage = () => {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
         />
-        <button type="submit" style={{ width: "100%" }}>
+        <button type="submit">
           {isRegistering ? "Зареєструватися" : "Увійти"}
         </button>
       </form>
-      <p style={{ marginTop: 10 }}>
+      <p>
         {isRegistering ? "Вже є акаунт?" : "Немає акаунту?"}{" "}
         <button
+          className={styles.toggleBtn}
           onClick={() => {
             setIsRegistering(!isRegistering);
             setMessage("");
@@ -90,7 +84,7 @@ const LoginPage = () => {
           {isRegistering ? "Увійти" : "Зареєструватися"}
         </button>
       </p>
-      {message && <p>{message}</p>}
+      {message && <p className={styles.message}>{message}</p>}
     </div>
   );
 };

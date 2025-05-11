@@ -1,0 +1,28 @@
+.article {
+  padding: 20px;
+  border-radius: 14px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.article:hover {
+  transform: translateY(-3px);
+}
+
+.article h3 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #1d4ed8;
+}
+
+.article a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.article p {
+  margin: 8px 0;
+  color: #374151;
+  font-size: 14px;
+}
