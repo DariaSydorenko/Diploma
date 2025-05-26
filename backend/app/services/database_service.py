@@ -11,7 +11,6 @@ def apply_filters(q, year=None, min_citations=None):
 
 
 async def check_existing_ids(db, openalex_ids):
-    """Пакетна перевірка існуючих ID в базі даних"""
     if not openalex_ids:
         return set()
     

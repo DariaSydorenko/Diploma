@@ -1,21 +1,8 @@
 from fastapi import APIRouter, Request, HTTPException
-# from app.services import some_service
 from app.firebase.firebase import verify_token
 from app.firebase.firebase import verify_token as firebase_verify_token
 
 router = APIRouter()
-
-# Маршрут для тестування
-@router.get("/hello")
-async def hello_world():
-    return {"message": "Hello, world!"}
-
-# Додаткові маршрути можуть йти сюди, наприклад для статей або користувачів
-# @router.post("/users")
-# async def create_user(data: dict):
-#     user = some_service.create_user(data)
-#     return user
-
 
 @router.get("/profile")
 async def get_profile(request: Request):

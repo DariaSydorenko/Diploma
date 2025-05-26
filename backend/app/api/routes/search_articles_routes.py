@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Query, Depends, Request
+import numpy as np
+import requests
 from sqlalchemy.orm import Session
 from typing import List, Optional
-import aiohttp
-import asyncio
-from datetime import datetime, date
+from datetime import date, datetime
 import time
-import concurrent.futures
+import torch
 import torch.nn.functional as F
 
-from sentence_transformers import util
 from app.database.database import get_db
 from app.models.article import Article as DbArticle
 from app.schemas.article_schema import ArticleSchema
@@ -18,6 +17,7 @@ from app.expert_analysis.analyzer import analyze_articles, is_results_insufficie
 from app.services.openalex_service import parallel_fetch_openalex
 from app.services.embedding_service import semantic_sort, batch_encode_embeddings
 from app.services.database_service import apply_filters, check_existing_ids
+from app.config.settings import MIN_ARTICLES_THRESHOLD, MIN_RELEVANCE_THRESHOLD
 
 router = APIRouter()
 
@@ -32,20 +32,64 @@ async def search_articles(
 ):
     start_time = time.time()
     model = request.app.state.model
-    print(model)
 
-    query_embedding = model.encode(query, convert_to_tensor=True)
-    query_embedding = F.normalize(query_embedding, p=2, dim=0)
+    # Вектор запиту
+    # query_embedding = model.encode(query, convert_to_tensor=True)
+    # query_embedding = F.normalize(query_embedding, p=2, dim=0)
+
+    
+    # top_articles = semantic_sort(local_articles, query_embedding, top_k)
+
+    # if not is_results_insufficient(top_articles, query=query):
+    #     print(f"Знайдено {len(top_articles)} релевантних статей у базі даних за {time.time() - start_time:.2f} сек")
+    #     return top_articles
 
     # Пошук у локальній БД
     db_query = apply_filters(db.query(DbArticle), year, min_citations)
     local_articles = db_query.all()
 
-    top_articles = semantic_sort(local_articles, query_embedding, top_k)
+    query_embedding = model.encode(query, convert_to_tensor=True)
+    query_vec = F.normalize(query_embedding.view(1, -1), p=2, dim=1)
 
-    if not is_results_insufficient(top_articles, query=query):
-        print(f"Знайдено {len(top_articles)} релевантних статей у базі даних за {time.time() - start_time:.2f} сек")
-        return top_articles  # Повертаємо статті, які вже є в базі даних
+    # Фільтрація локальних статей, які мають embedding
+    relevant_articles = []
+    similarities = []
+
+    for art in local_articles:
+        emb = art.embedding
+        if emb is None:
+            continue
+
+        try:
+            if not isinstance(emb, torch.Tensor):
+                emb = torch.tensor(emb, dtype=torch.float32)
+
+            if emb.shape[0] != query_embedding.shape[0]:
+                continue
+
+            article_vec = F.normalize(emb.view(1, -1), p=2, dim=1)
+            sim = F.cosine_similarity(query_vec, article_vec).item()
+
+            relevant_articles.append((art, sim))
+            similarities.append(sim)
+
+        except Exception as e:
+            print(f"❗ Помилка при обчисленні схожості: {e}")
+            continue
+
+    # Якщо недостатньо релевантних статей
+    if len(relevant_articles) < MIN_ARTICLES_THRESHOLD:
+        print(f"Недостатньо релевантних статей: {len(relevant_articles)} < {MIN_ARTICLES_THRESHOLD}")
+    else:
+        avg_sim = np.mean(similarities) if similarities else 0.0
+        if avg_sim >= MIN_RELEVANCE_THRESHOLD:
+            # Сортування по релевантності
+            relevant_articles.sort(key=lambda x: x[1], reverse=True)
+            top_articles = [a for a, _ in relevant_articles[:top_k]]
+            print(f"✅ Знайдено {len(top_articles)} статей у БД з середньою релевантністю {avg_sim:.2f}")
+            return top_articles
+        else:
+            print(f"Низька релевантність: {avg_sim:.2f} < {MIN_RELEVANCE_THRESHOLD}")
 
     print("Локальних результатів недостатньо, шукаємо в OpenAlex...")
 
@@ -54,14 +98,14 @@ async def search_articles(
     filters = []
     if year:
         filters.append(f"from_publication_date:{year}-01-01")
-        filters.append(f"to_publication_date:{year}-12-31")
+        filters.append(f"to_publication_date:{date.today().isoformat()}")
     if min_citations:
         filters.append(f"cited_by_count:>{min_citations}")
     filter_str = ",".join(filters)
 
     params = {
         "search": query,
-        "per-page": 200,
+        "per-page": 25,
         "select": "id,doi,display_name,publication_year,updated_date,"
                   "abstract_inverted_index,cited_by_count,concepts,keywords,"
                   "open_access,has_fulltext,is_retracted,"
@@ -71,7 +115,7 @@ async def search_articles(
         params["filter"] = filter_str
 
     # Паралельне отримання даних з OpenAlex
-    max_results = 400
+    max_results = 50
     all_results = await parallel_fetch_openalex(query, base_url, params, max_results)
 
     if not all_results:
@@ -81,7 +125,7 @@ async def search_articles(
     openalex_ids = [work[1].get("id") for work in all_results if work[1].get("id")]
     existing_ids = await check_existing_ids(db, openalex_ids)
     
-    # Фільтруємо результати, виключаючи ті, що вже є в БД
+    # Фільтрація результатів, виключаючи ті, що вже є в БД
     filtered_results = []
     for text, work in all_results:
         openalex_id = work.get("id")
@@ -151,7 +195,7 @@ async def search_articles(
         except Exception as e:
             print(f"Помилка при створенні article: {e}")
 
-    # Отримуємо оновлений список статей з бази даних і сортуємо для фінального результату
+    # Оновлений список статей з бази даних і сортування для фінального результату
     db_query = apply_filters(db.query(DbArticle).filter(DbArticle.id.in_(new_article_ids)))
     filtered_articles = db_query.all()
     final_articles = semantic_sort(filtered_articles, query_embedding, top_k)

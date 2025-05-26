@@ -38,14 +38,14 @@ function SearchForm({ onResults, setLoading }) {
       />
       <input
         type="number"
-        placeholder="Рік"
+        placeholder="Рік (від якого починається пошук)"
         value={year}
         onChange={(e) => setYear(e.target.value)}
         className={styles.input}
       />
       <input
         type="number"
-        placeholder="Мін. цитувань"
+        placeholder="Мінімум цитувань"
         value={minCitations}
         onChange={(e) => setMinCitations(e.target.value)}
         className={styles.input}

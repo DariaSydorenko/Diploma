@@ -5,19 +5,17 @@ from app.utils.text_processing import is_valid_work, full_text_from_work
 import requests
 
 async def fetch_openalex_data(session, base_url, params, cursor):
-    """Оптимізоване отримання даних з OpenAlex API у асинхронному режимі"""
     try:
-        # Додаємо User-Agent заголовок для запобігання 403 помилки
         headers = {
             "User-Agent": "Diploma/1.0 (mailto:dashasidorenko123@gmail.com)"
         }
         
-        # Використовуємо cursor для пагінації
+        # Cursor для пагінації
         request_params = {**params}
         if cursor and cursor != "*":
             request_params["cursor"] = cursor
         
-        # Додаємо таймаут для запобігання зависанню запитів
+        # Таймаут для запобігання зависанню запитів
         async with session.get(
             base_url, 
             params=request_params, 
@@ -39,15 +37,11 @@ async def fetch_openalex_data(session, base_url, params, cursor):
 from difflib import SequenceMatcher
 
 def relevance_score(query, title, abstract):
-    """Обчислює релевантність — більше значення = краща відповідність"""
     title_score = SequenceMatcher(None, query.lower(), title.lower()).ratio()
-    abstract_score = SequenceMatcher(None, query.lower(), abstract.lower()).ratio() if abstract else 0
-    return title_score * 2 + abstract_score  # заголовок має більшу вагу
-
-
+    # abstract_score = SequenceMatcher(None, query.lower(), abstract.lower()).ratio() if abstract else 0
+    return title_score
 
 async def parallel_fetch_openalex(query, base_url, params, max_results):
-    """Оптимізоване паралельне отримання даних з OpenAlex"""
     next_cursor = "*"
     collected = 0
     all_results = []
@@ -69,7 +63,7 @@ async def parallel_fetch_openalex(query, base_url, params, max_results):
                 score = relevance_score(query, title, abstract_text)
                 scored_results.append((score, (abstract_text, work)))
 
-        # Сортуємо по релевантності
+        # Сортування по релевантності
         scored_results.sort(reverse=True, key=lambda x: x[0])
         valid_results = [item for _, item in scored_results]
 

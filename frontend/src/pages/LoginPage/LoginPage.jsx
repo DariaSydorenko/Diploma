@@ -42,11 +42,46 @@ const LoginPage = () => {
         setMessage(`✅ Успішна авторизація, але сервер відповів: ${data.detail}`);
       }
     } catch (err) {
-      if (err.message.includes("Failed to fetch")) {
-        setMessage("✅ Успішна авторизація через Firebase, але бекенд недоступний.");
+      console.error(err);
+    
+      let userMessage = "❌ Помилка: ";
+    
+      if (err.code) {
+        switch (err.code) {
+          case "auth/invalid-email":
+            userMessage += "Неправильний формат електронної пошти.";
+            break;
+          case "auth/user-not-found":
+            userMessage += "Користувача з такою поштою не знайдено.";
+            break;
+          case "auth/wrong-password":
+            userMessage += "Неправильний пароль.";
+            break;
+          case "auth/email-already-in-use":
+            userMessage += "Цей email вже зареєстрований.";
+            break;
+          case "auth/weak-password":
+            userMessage += "Пароль занадто слабкий. Мінімум 6 символів.";
+            break;
+          case "auth/missing-password":
+            userMessage += "Введіть пароль.";
+            break;
+          case "auth/network-request-failed":
+            userMessage += "Проблема з мережею. Перевірте з'єднання.";
+            break;
+          case "auth/invalid-credential":
+            userMessage += "Недійсні дані для входу. Спробуйте ще раз або оновіть сторінку.";
+            break;
+          default:
+            userMessage += err.message;
+        }
+      } else if (err.message.includes("Failed to fetch")) {
+        userMessage = "✅ Успішна авторизація через Firebase, але не вдалося підключитися до бекенду.";
       } else {
-        setMessage("❌ Помилка: " + err.message);
+        userMessage += err.message;
       }
+    
+      setMessage(userMessage);
     }
   };
 
