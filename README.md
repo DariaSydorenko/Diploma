@@ -15,7 +15,7 @@
 - **Пошуковий механізм**: Sentence Transformers (NLP, embeddings)  
 - **Зовнішнє джерело**: OpenAlex API  
 
-![Архітектура](docs/system_architecture.png)
+![Архітектура](docs/system_architecture.jpg)
 
 ---
 
