@@ -6,7 +6,6 @@ from app.expert_analysis.expert_score.metrics import (
     get_keyword_match_score,
     get_language_relevance
 )
-from app.expert_analysis.expert_score.similarity import compute_semantic_similarity
 from app.config.settings import CURRENT_YEAR
 from app.models.article import Article
 

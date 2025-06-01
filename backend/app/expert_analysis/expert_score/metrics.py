@@ -1,8 +1,6 @@
 from typing import List, Dict, Any
 import numpy as np
-from app.models.article import Article
 from app.config.settings import CURRENT_YEAR
-from app.utils.text_processing import extract_abstract_text
 from app.config.settings import PRESTIGIOUS_NAMES
 
 def get_author_influence_score(authorships: List[Dict[str, Any]]) -> float:

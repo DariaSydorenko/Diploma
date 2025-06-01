@@ -2,9 +2,9 @@
   max-width: 900px;
   margin: 40px auto;
   padding: 20px;
-  background-color: #f9fafb;
+  background-color: #fdf4ff;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   font-family: "Segoe UI", sans-serif;
 }
 
@@ -16,13 +16,13 @@
 }
 
 .header h1 {
-  color: #1f2937;
+  color: #1e293b;
   font-size: 28px;
   margin: 0;
 }
 
 .logoutBtn {
-  background-color: #ef4444;
+  background-color: #f97316;
   color: white;
   padding: 10px 16px;
   border: none;
@@ -33,7 +33,7 @@
 }
 
 .logoutBtn:hover {
-  background-color: #dc2626;
+  background-color: #c2410c;
 }
 
 .results {
@@ -46,7 +46,7 @@
   font-family: 'Segoe UI', 'Roboto', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  color: #4b5563;
+  color: #475569;
   text-align: center;
   margin-top: 20px;
 }

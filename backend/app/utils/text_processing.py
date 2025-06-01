@@ -1,11 +1,3 @@
-def extract_abstract_text(inverted_index: dict) -> str:
-    if not inverted_index:
-        return ""
-    sorted_words = sorted(inverted_index.items(), key=lambda x: min(x[1]))
-    print(sorted_words)
-    return " ".join(word for word, _ in sorted_words)
-    
-
 def is_valid_work(work):
     openalex_id = work.get("id")
     if not openalex_id:

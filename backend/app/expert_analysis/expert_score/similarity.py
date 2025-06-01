@@ -1,15 +1,10 @@
 import torch
 import torch.nn.functional as F
 import numpy as np
-from sentence_transformers import SentenceTransformer, util
-from app.models.article import Article
-from app.config.settings import QUERY_LENGTH_THRESHOLD
-from fastapi import Request
-from app.utils.text_processing import extract_abstract_text
-from typing import List, Tuple, Dict, Any, Optional
+from sentence_transformers import SentenceTransformer
+from typing import List, Any
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
-# model = SentenceTransformer('all-mpnet-base-v2')
 
 def compute_semantic_similarity(article, query_embedding):
     try:
@@ -28,8 +23,7 @@ def compute_semantic_similarity(article, query_embedding):
                 abstract = " ".join(abstract_words)
             except Exception as e:
                 print(f"❗ Помилка обробки abstract_inverted_index: {e}")
-        
-        # Формуємо повний текст
+
         full_text = f"{title} {abstract}".strip()
         if not full_text:
             return 0.0
@@ -43,7 +37,6 @@ def compute_semantic_similarity(article, query_embedding):
         if not chunks:
             return 0.0
 
-        # Кодування та обчислення схожості
         chunk_embeddings = model.encode(chunks, convert_to_tensor=True)
         chunk_embeddings = F.normalize(chunk_embeddings, p=2, dim=1)
         query_vec = F.normalize(query_embedding.view(1, -1), p=2, dim=1)
@@ -82,12 +75,10 @@ def compute_query_similarity(query: str, articles: List[Any]) -> float:
                     abstract_words = [positions.get(i, "") for i in range(max_pos + 1)]
                     abstract = " ".join(abstract_words)
 
-                # 3. Обʼєднання тексту
                 full_text = f"{title} {abstract}".strip()
                 if not full_text:
                     continue
 
-                # 4. Поділ на chunks по ~40 слів
                 if len(full_text) <= 200:
                     chunks = [full_text]
                 else:
@@ -97,7 +88,6 @@ def compute_query_similarity(query: str, articles: List[Any]) -> float:
                 if not chunks:
                     continue
 
-                # 5. Кодування та обчислення максимального score
                 chunk_embeddings = model.encode(chunks, convert_to_tensor=True)
                 chunk_embeddings = F.normalize(chunk_embeddings, p=2, dim=1)
 

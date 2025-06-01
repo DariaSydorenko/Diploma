@@ -5,16 +5,11 @@ from app.expert_analysis.expert_score.compute_expert_score import compute_expert
 from app.config.settings import (
     MODEL_NAME,
     MIN_ARTICLES_THRESHOLD,
-    SIMILARITY_YEAR_SPAN,
-    CURRENT_YEAR,
-    MIN_RELEVANCE_THRESHOLD,
-    QUERY_LENGTH_THRESHOLD
+    MIN_RELEVANCE_THRESHOLD
 )
-from fastapi import Request
 from sentence_transformers import SentenceTransformer
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
-# model = SentenceTransformer('all-mpnet-base-v2')
+model = SentenceTransformer(MODEL_NAME)
 
 def is_results_insufficient(articles: List[Any], query: str = None) -> bool:
     if len(articles) < MIN_ARTICLES_THRESHOLD:

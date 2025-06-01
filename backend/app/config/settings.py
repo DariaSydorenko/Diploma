@@ -2,10 +2,8 @@ import datetime
 
 MODEL_NAME = 'all-MiniLM-L6-v2'
 MIN_ARTICLES_THRESHOLD = 5
-SIMILARITY_YEAR_SPAN = 2
 CURRENT_YEAR = datetime.datetime.now().year
 MIN_RELEVANCE_THRESHOLD = 0.8
-QUERY_LENGTH_THRESHOLD = 5
 PRESTIGIOUS_NAMES = {
     "harvard university",
     "stanford university",

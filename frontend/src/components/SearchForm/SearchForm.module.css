@@ -2,18 +2,18 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  background-color: #f3f4f6;
+  background-color: #e0f2fe;
   padding: 20px;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
 }
 
 .input {
   padding: 10px 14px;
   border-radius: 10px;
-  border: 1px solid #cbd5e1;
-  background-color: white;
+  border: 1px solid #60a5fa;
+  background-color: #f0f9ff;
   font-size: 14px;
   flex: 1 1 220px;
   transition: border-color 0.3s;
@@ -23,11 +23,11 @@
 .input:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.4);
 }
 
 .button {
-  background-color: #2563eb;
+  background-color: #2196cc;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -41,5 +41,5 @@
 }
 
 .button:hover {
-  background-color: #1e40af;
+  background-color: #0369a1;
 }

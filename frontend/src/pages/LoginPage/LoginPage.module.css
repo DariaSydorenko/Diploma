@@ -1,9 +1,9 @@
 .container {
   max-width: 400px;
   margin: 80px auto;
-  background: #f8f9fc;
+  background: #fefce8;
   border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   padding: 40px 30px;
   font-family: "Segoe UI", sans-serif;
   text-align: center;
@@ -11,7 +11,7 @@
 
 h2 {
   margin-bottom: 24px;
-  color: #2a2a2a;
+  color: #3f3f46;
 }
 
 .form {
@@ -24,19 +24,19 @@ input {
   padding: 14px 18px;
   border: none;
   border-radius: 14px;
-  background-color: #e2e8f0;
+  background-color: #fff7ed;
   font-size: 16px;
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 input:focus {
   outline: none;
-  background-color: #dbeafe;
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.4);
+  background-color: #ffedd5;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.4);
 }
 
 button {
-  background-color: #4f46e5;
+  background-color: #22c55e;
   color: white;
   padding: 14px;
   border: none;
@@ -54,7 +54,7 @@ button:hover {
 .toggleBtn {
   background: none;
   border: none;
-  color: #3b82f6;
+  color: #0ea5e9;
   cursor: pointer;
   font-weight: bold;
   font-size: 15px;
@@ -64,13 +64,13 @@ button:hover {
 }
 
 .toggleBtn:hover {
-  color: #2563eb;
+  color: #0369a1;
   text-decoration: underline;
 }
 
 .message {
   margin-top: 20px;
   font-size: 15px;
-  color: #10b981;
+  color: #22c55e;
   white-space: pre-line;
 }

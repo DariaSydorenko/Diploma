@@ -1,8 +1,8 @@
 .article {
   padding: 20px;
   border-radius: 14px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background-color: #fbf2ce;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }
 
@@ -13,7 +13,7 @@
 .article h3 {
   margin-top: 0;
   font-size: 18px;
-  color: #1d4ed8;
+  color: #e20031;
 }
 
 .article a {
@@ -23,6 +23,6 @@
 
 .article p {
   margin: 8px 0;
-  color: #374151;
+  color: #334155;
   font-size: 14px;
 }

@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Query, Depends, Request
 import numpy as np
-import requests
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date, datetime
