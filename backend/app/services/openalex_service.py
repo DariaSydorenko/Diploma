@@ -1,8 +1,5 @@
 import aiohttp
-import asyncio
-from typing import List, Dict, Any, Tuple, Optional
 from app.utils.text_processing import is_valid_work, full_text_from_work
-import requests
 
 async def fetch_openalex_data(session, base_url, params, cursor):
     try:

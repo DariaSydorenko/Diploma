@@ -1,4 +1,3 @@
-from sqlalchemy.orm import Session
 from app.models.article import Article as DbArticle
 
 def apply_filters(q, year=None, min_citations=None):
