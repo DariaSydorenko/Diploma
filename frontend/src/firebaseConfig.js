@@ -3,14 +3,13 @@ import { getAuth } from "firebase/auth";
 // import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  // storageBucket: "assistant-for-scientists.appspot.com",
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
+  apiKey: "AIzaSyBdWJj4FobiDdHNv_OrYgMfZuDINGCr804",
+  authDomain: "assistant-for-scientists.firebaseapp.com",
+  projectId: "assistant-for-scientists",
+  storageBucket: "assistant-for-scientists.firebasestorage.app",
+  messagingSenderId: "153891253963",
+  appId: "1:153891253963:web:5eee8d8fdd828a27b8b54e",
+  measurementId: "G-VGCM5DYPKS"
 };
 
 const app = initializeApp(firebaseConfig);

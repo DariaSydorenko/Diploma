@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.routes.search_articles_routes import router as search_articles_router
-from .authorization_routes import router as authorization_router
+from app.api.routes.authorization_routes import router as authorization_router
 
 router = APIRouter()
 
